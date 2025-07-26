@@ -17,7 +17,6 @@
             border-radius: 16px;
             box-shadow: 0 6px 32px 0 #2de3ff19;
             padding: 2.2em 2.3em 2.3em 2.3em;
-            display: none;
         }
         .admin-section h2 {
             font-family: 'Orbitron', 'Montserrat', Arial, Helvetica, sans-serif;
@@ -121,19 +120,7 @@
 </head>
 <body class="dark-bg">
     <canvas class="animated-bg-canvas"></canvas>
-    <!-- Admin Login Modal -->
-    <div id="admin-login-modal" class="modal" style="display:flex;">
-      <div class="modal-content">
-        <h3 style="color:#2de3ff;margin-top:0;">Admin Login</h3>
-        <form id="admin-login-form">
-          <input type="text" id="admin-login-username" placeholder="Admin Username" autocomplete="username" required>
-          <input type="password" id="admin-login-password" placeholder="Admin Password" autocomplete="current-password" required>
-          <button type="submit" class="btn-primary">Login</button>
-        </form>
-        <div id="admin-login-error" style="color:#ff4b5c;min-height:1.5em;margin-top:0.7em;"></div>
-      </div>
-    </div>
-    <div class="admin-section" style="display:none;">
+    <div class="admin-section">
         <h2><i class="fa-solid fa-user-gear"></i> Syndicate Admin Panel 
             <button id="admin-logout-btn" class="btn-delete-member" style="float:right;margin-left:1em;">Logout</button>
         </h2>
