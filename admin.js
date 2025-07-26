@@ -12,14 +12,7 @@ function escapeHtml(text) {
         })[match];
     });
 }
-document.addEventListener("DOMContentLoaded", function() {
-  var adminTasksBtn = document.getElementById("admin-tasks-btn");
-  if (adminTasksBtn) {
-    adminTasksBtn.addEventListener("click", function() {
-      window.location.href = "admin-tasks.html";
-    });
-  }
-});
+
 
 const SYNDICATE_ROLES = [
     "Founder",
@@ -244,9 +237,15 @@ function setupModalClose() {
 }
 
 // --- DOMContentLoaded: Event Wiring ---
+
 document.addEventListener("DOMContentLoaded", function() {
     // Member management
-  
+  var adminTasksBtn = document.getElementById("admin-tasks-btn");
+  if (adminTasksBtn) {
+    adminTasksBtn.addEventListener("click", function() {
+      window.location.href = "admin-tasks.html";
+    });
+  }
     renderAdminMemberList();
     document.getElementById("add-member-form").onsubmit = addMember;
     document.getElementById("edit-member-form").onsubmit = saveEditedMember;
