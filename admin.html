@@ -227,6 +227,25 @@
     </div>
     <script src="sha256.js"></script>
     <script src="animated-bg.js"></script>
+    <!-- Firebase SDKs: -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.1/firebase-database-compat.js"></script>
+    <script>
+      // Your Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyAcKNUaCd3Xo-GUxBA_NmzVWfVpnVC-m0A",
+        authDomain: "syndicate-ragestar.firebaseapp.com",
+        databaseURL: "https://syndicate-ragestar-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "syndicate-ragestar",
+        storageBucket: "syndicate-ragestar.firebasestorage.app",
+        messagingSenderId: "999935359149",
+        appId: "1:999935359149:web:190243de7b87b8b429ae24",
+        measurementId: "G-728FW0TF79"
+      };
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+      const db = firebase.database();
+    </script>
     <script src="admin.js"></script>
 </body>
 </html>
