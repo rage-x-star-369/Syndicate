@@ -12,6 +12,14 @@ function escapeHtml(text) {
         })[match];
     });
 }
+document.addEventListener("DOMContentLoaded", function() {
+  var adminTasksBtn = document.getElementById("admin-tasks-btn");
+  if (adminTasksBtn) {
+    adminTasksBtn.addEventListener("click", function() {
+      window.location.href = "admin-tasks.html";
+    });
+  }
+});
 
 const SYNDICATE_ROLES = [
     "Founder",
