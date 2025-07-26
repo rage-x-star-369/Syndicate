@@ -1,60 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Syndicate Messenger</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Orbitron:wght@700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="messages.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <meta charset="UTF-8">
+    <title>Syndicate Private Messages</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Orbitron:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+      body { background: #181a20; color: #e3f7ff; margin:0; }
+      .pm-main { max-width:700px; margin:2.5em auto 0 auto; background:#232635; border-radius:13px; padding:2em 1.2em 3em 1.2em; box-shadow:0 6px 32px 0 #2de3ff19;}
+      .pm-header { display:flex; align-items:center; justify-content:space-between; }
+      .pm-header h2 { color: #2de3ff; font-family:Orbitron,sans-serif; margin:0; }
+      .pm-logout, .pm-back { background: none; border:none; color:#2de3ff; font-size:1.2em; cursor:pointer; }
+      .pm-users-list { background: #222b4c; border-radius:8px; padding:1em; margin-bottom:2em; }
+      .pm-users-list label { color:#7bffe9; font-size:1.01em; }
+      .pm-users-list select { background:#232635; color:#e3f7ff; border-radius:7px; border:1.5px solid #2de3ff33; padding:0.45em 1em; font-size:1em; }
+      .pm-chat-window { background:#222b4c; border-radius:8px; min-height:300px; max-height:350px; overflow-y:auto; padding:1em; margin-bottom:1em; }
+      .pm-message-row { display:flex; margin-bottom:0.75em; }
+      .pm-message-row .pm-msg-bubble { max-width:63%; padding:0.7em 1em; border-radius:1em; font-size:1.09em;}
+      .pm-message-row.self { flex-direction:row-reverse; }
+      .pm-message-row.self .pm-msg-bubble { background:#2de3ff; color:#222b4c; margin-left:1.2em;}
+      .pm-message-row.other .pm-msg-bubble { background:#232635; color:#e3f7ff; margin-right:1.2em;}
+      .pm-msg-meta { font-size:0.85em; color:#7bffe9; margin-top:0.15em; }
+      .pm-new-msg-form { display:flex; gap:0.7em; }
+      .pm-new-msg-form textarea { flex:1; min-height:2.7em; border-radius:9px; border:1.5px solid #2de3ff33; background:#232635; color:#e3f7ff; font-size:1.07em; padding:0.6em 1em; }
+      .pm-new-msg-form button { background:linear-gradient(90deg,#2de3ff 60%,#7bffe9 100%); color:#181a20; border:none; border-radius:7px; padding:0.4em 1.2em; font-weight:700; font-size:1.11em; box-shadow: 0 2px 7px 0 #2de3ff17;}
+      @media (max-width:600px) {
+        .pm-main{padding:1em 0.4em 2em 0.4em;}
+        .pm-chat-window{padding:0.5em;}
+      }
+    </style>
 </head>
 <body>
-  <div id="loader-overlay" style="display:none;">
-    <div class="loader-spinner"></div>
-  </div>
-  <div class="wa-chat-app">
-    <div class="wa-header">
-      <span><i class="fa-solid fa-comments"></i> Syndicate Messenger</span>
-      <button class="icon-btn" id="logout-btn" title="Logout"><i class="fa-solid fa-sign-out-alt"></i></button>
+    <div id="loader-overlay" style="display:none;">
+      <div class="loader-spinner"></div>
     </div>
-    <div class="wa-main">
-      <!-- LEFT: Chat list -->
-      <aside class="wa-chat-list">
-        <div class="wa-chat-list-search">
-          <input type="text" id="search-user" placeholder="Search users...">
+    <canvas class="animated-bg-canvas"></canvas>
+    <div class="pm-main">
+        <div class="pm-header">
+            <button class="pm-back" id="pm-back-btn" title="Back"><i class="fa-solid fa-arrow-left"></i> Back</button>
+            <h2><i class="fa-solid fa-envelope"></i> Private Messages</h2>
+            <button class="pm-logout" id="pm-logout-btn" title="Logout"><i class="fa-solid fa-sign-out-alt"></i></button>
         </div>
-        <ul id="chat-list"></ul>
-      </aside>
-      <!-- RIGHT: Chat area -->
-      <section class="wa-chat-area">
-        <div id="chat-header">
-          <span id="chat-user"></span>
+        <div class="pm-users-list">
+            <label for="pm-user-select">Conversation with:</label>
+            <select id="pm-user-select"></select>
         </div>
-        <div id="messages"></div>
-        <form class="wa-message-input-bar" id="message-form" autocomplete="off">
-          <textarea id="message-input" placeholder="Type a message..." required></textarea>
-          <button id="send-btn" type="submit"><i class="fa-solid fa-paper-plane"></i></button>
+        <div class="pm-chat-window" id="pm-chat-window">
+            <!-- Messages will appear here -->
+        </div>
+        <form id="pm-new-msg-form" class="pm-new-msg-form" autocomplete="off">
+            <textarea id="pm-new-msg-text" placeholder="Type your message..." required></textarea>
+            <button type="submit">Send</button>
         </form>
-      </section>
     </div>
-  </div>
-  <script src="https://www.gstatic.com/firebasejs/10.12.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.1/firebase-database-compat.js"></script>
-  <script>
-    // Firebase config (already correct!)
-    const firebaseConfig = {
-      apiKey: "AIzaSyAcKNUaCd3Xo-GUxBA_NmzVWfVpnVC-m0A",
-      authDomain: "syndicate-ragestar.firebaseapp.com",
-      databaseURL: "https://syndicate-ragestar-default-rtdb.asia-southeast1.firebasedatabase.app",
-      projectId: "syndicate-ragestar",
-      storageBucket: "syndicate-ragestar.appspot.com",
-      messagingSenderId: "999935359149",
-      appId: "1:999935359149:web:190243de7b87b8b429ae24",
-      measurementId: "G-728FW0TF79"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
-  </script>
-  <script src="messages.js"></script>
+    <script src="animated-bg.js"></script>
+    <!-- Firebase SDKs: -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.1/firebase-database-compat.js"></script>
+    <script>
+      // Your Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyAcKNUaCd3Xo-GUxBA_NmzVWfVpnVC-m0A",
+        authDomain: "syndicate-ragestar.firebaseapp.com",
+        databaseURL: "https://syndicate-ragestar-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "syndicate-ragestar",
+        storageBucket: "syndicate-ragestar.firebaseapp.com",
+        messagingSenderId: "999935359149",
+        appId: "1:999935359149:web:190243de7b87b8b429ae24",
+        measurementId: "G-728FW0TF79"
+      };
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+      const db = firebase.database();
+    </script>
+    <script src="messages.js"></script>
 </body>
 </html>
