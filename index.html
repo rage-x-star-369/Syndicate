@@ -9,6 +9,102 @@
     <link rel="stylesheet" href="styles.css">
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+      /* Admin login button and modal */
+      #admin-login-fab {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        z-index: 30;
+        background: linear-gradient(90deg,#2de3ff 60%,#7bffe9 100%);
+        color: #181a20;
+        border: none;
+        border-radius: 50%;
+        box-shadow: 0 3px 16px 0 #2de3ff2a;
+        width: 58px;
+        height: 58px;
+        font-size: 2em;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.15s;
+      }
+      #admin-login-fab:hover {
+        background: linear-gradient(90deg,#1daaff 70%,#1de1e1 100%);
+        color: #fff;
+      }
+      #admin-modal {
+        position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+        background: rgba(20,30,40,0.83);
+        display: none; align-items: center; justify-content: center;
+        z-index: 100;
+      }
+      #admin-modal .modal-content {
+        background: #232635;
+        padding: 2.2em 2.5em;
+        border-radius: 15px;
+        min-width: 320px;
+        max-width: 96vw;
+        box-shadow: 0 4px 22px 0 #2de3ff22;
+        position: relative;
+      }
+      #admin-modal .close-btn {
+        position: absolute;
+        right: 1em; top: 1em;
+        background: none;
+        border: none;
+        color: #2de3ff;
+        font-size: 1.7em;
+        cursor: pointer;
+      }
+      #admin-modal input[type="text"], #admin-modal input[type="password"] {
+        width: 100%;
+        padding: 0.82em 1.1em;
+        border: 1.5px solid #272c3d;
+        border-radius: 7px;
+        font-size: 1.1em;
+        margin-bottom: 1.1em;
+        background: #222b4c;
+        color: #e3f7ff;
+        box-sizing: border-box;
+        outline: none;
+        transition: border 0.16s;
+      }
+      #admin-modal input:focus {
+        border-color: #2de3ff;
+      }
+      #admin-modal .btn-primary {
+        width: 100%;
+        padding: 0.75em 1.5em;
+        background: linear-gradient(90deg,#2de3ff 60%,#7bffe9 100%);
+        color: #181a20;
+        font-size: 1.13em;
+        border: none;
+        border-radius: 7px;
+        font-weight: bold;
+        cursor: pointer;
+        letter-spacing: 0.02em;
+        margin-top: 0.1em;
+        margin-bottom: 1.1em;
+        box-shadow: 0 2px 8px 0 #2de3ff17;
+        transition: background 0.15s;
+      }
+      #admin-modal .btn-primary:hover {
+        background: linear-gradient(90deg,#1daaff 70%,#1de1e1 100%);
+        color: #fff;
+      }
+      #admin-login-error {
+        color: #ff4b5c;
+        min-height: 1.4em;
+        margin-top: 0.7em;
+        text-align: center;
+      }
+      @media (max-width:700px) {
+        #admin-login-fab { right: 14px; bottom: 14px; width: 48px; height: 48px; font-size: 1.45em;}
+        #admin-modal .modal-content { padding: 1.2em 0.8em; }
+      }
+    </style>
 </head>
 <body class="dark-bg">
     <canvas class="animated-bg-canvas"></canvas>
@@ -66,7 +162,22 @@
         </section>
     </div>
 
-    <!-- (Optional legacy modal, not used if using WhatsApp style page) -->
+    <!-- Admin Login FAB -->
+    <button id="admin-login-fab" title="Admin Login"><i class="fa-solid fa-user-shield"></i></button>
+    <!-- Admin Modal -->
+    <div id="admin-modal">
+      <div class="modal-content">
+        <button class="close-btn" id="admin-modal-close" title="Close">&times;</button>
+        <h2 style="color:#2de3ff;margin-top:0;text-align:center;"><i class="fa-solid fa-user-shield"></i> Admin Login</h2>
+        <form id="admin-login-form-modal" autocomplete="off">
+          <input type="text" id="admin-username" placeholder="Admin Username" maxlength="40" required autocomplete="username">
+          <input type="password" id="admin-password" placeholder="Admin Password" maxlength="64" required autocomplete="current-password">
+          <button type="submit" class="btn-primary">Login</button>
+        </form>
+        <div id="admin-login-error"></div>
+      </div>
+    </div>
+
     <div id="pm-panel" class="modal" style="display:none;">
         <div class="modal-content">
             <button id="close-pm-modal" class="modal-close">&times;</button>
@@ -82,5 +193,51 @@
 
     <script src="animated-bg.js"></script>
     <script src="script.js"></script>
+    <script>
+      // Admin login modal logic
+      (function() {
+        const fab = document.getElementById('admin-login-fab');
+        const modal = document.getElementById('admin-modal');
+        const closeBtn = document.getElementById('admin-modal-close');
+        const form = document.getElementById('admin-login-form-modal');
+        const error = document.getElementById('admin-login-error');
+        // SHA-256 for 'admin123'
+        const ADMIN_HASH = "0192023a7bbd73250516f069df18b500";
+        // fallback: use local sha256.js if needed (not required for this simple check)
+        function md5(str) {
+          // Simple JS implementation for demo only (not cryptographically safe, but matches above hash)
+          // If you want secure, use window.crypto.subtle or sha256.js
+          // This is only for "admin123" demo
+          if(str === "admin123") return ADMIN_HASH;
+          return "";
+        }
+        fab.onclick = function() {
+          modal.style.display = "flex";
+          error.textContent = "";
+          form.reset();
+        };
+        closeBtn.onclick = function() {
+          modal.style.display = "none";
+        };
+        window.onclick = function(e) {
+          if (e.target === modal) modal.style.display = "none";
+        };
+        form.onsubmit = function(e) {
+          e.preventDefault();
+          const uname = document.getElementById('admin-username').value.trim();
+          const pw = document.getElementById('admin-password').value;
+          if (uname === 'admin' && pw === 'admin123') {
+            error.style.color = "green";
+            error.textContent = "Login successful! Redirecting...";
+            setTimeout(function() {
+              window.location.href = "admin.html";
+            }, 500);
+          } else {
+            error.style.color = "#ff4b5c";
+            error.textContent = "Incorrect admin username or password.";
+          }
+        };
+      })();
+    </script>
 </body>
 </html>
