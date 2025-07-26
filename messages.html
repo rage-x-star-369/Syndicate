@@ -2,270 +2,76 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Syndicate - Private Messages</title>
+    <title>Syndicate Private Messages</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Fonts and Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Orbitron:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
-    <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <!-- WhatsApp-like messaging styles (optional, extend styles.css as desired) -->
     <style>
-        body {
-            background: #181d23;
-            margin: 0;
-            padding: 0;
-        }
-        .wa-chat-app {
-            max-width: 950px;
-            margin: 0 auto;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            z-index: 1;
-        }
-        .wa-header {
-            background: #232635;
-            color: #2de3ff;
-            font-family: 'Orbitron', 'Montserrat', Arial, Helvetica, sans-serif;
-            font-size: 1.17em;
-            padding: 1.2em 2em;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            border-bottom: 2px solid #2de3ff22;
-        }
-        .wa-header .icon-btn {
-            color: #2de3ff;
-            font-size: 1.3em;
-            margin-left: 1.3em;
-        }
-        .wa-main {
-            display: flex;
-            flex: 1 1 0;
-            min-height: 0;
-        }
-        .wa-chat-list {
-            width: 280px;
-            background: #20273a;
-            border-right: 2px solid #2de3ff13;
-            display: flex;
-            flex-direction: column;
-        }
-        .wa-chat-list-search {
-            padding: 1em 0.8em 0.6em 0.8em;
-        }
-        #search-user {
-            width: 100%;
-            background: #222b4c;
-            color: #2de3ff;
-            border: 1.5px solid #232635;
-            border-radius: 7px;
-            font-size: 1em;
-            padding: 0.5em 1em;
-            outline: none;
-            margin-bottom: 0.3em;
-        }
-        #chat-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            overflow-y: auto;
-            flex: 1 1 0;
-        }
-        #chat-list li {
-            cursor: pointer;
-            padding: 0.7em 1em;
-            border-bottom: 1px solid #232635;
-            display: flex;
-            align-items: center;
-            gap: 0.7em;
-            background: none;
-            transition: background 0.14s;
-        }
-        #chat-list li.active, #chat-list li:hover {
-            background: #1a2438;
-        }
-        #chat-list .chat-avatar {
-            width: 33px; height: 33px; border-radius: 50%;
-            background: #222b4c; color: #2de3ff;
-            display: flex; align-items: center; justify-content: center; font-size: 1.15em; font-weight: bold;
-            border: 2px solid #2de3ff33;
-        }
-        #chat-list .chat-info {
-            flex: 1 1 0;
-        }
-        #chat-list .chat-name {
-            font-weight: 600;
-            color: #e3f7ff;
-            font-size: 1.0em;
-        }
-        #chat-list .chat-last {
-            color: #b2bec3;
-            font-size: 0.94em;
-        }
-        #chat-list .chat-unread {
-            margin-left: 0.6em;
-        }
-        .role-badge {
-            display: inline-block;
-            background: linear-gradient(90deg,#2de3ff 60%,#7bffe9 100%);
-            color: #181a20;
-            font-size: 0.87em;
-            border-radius: 0.6em;
-            margin-left: 0.4em;
-            padding: 0.08em 0.58em;
-            font-weight: 600;
-            box-shadow: 0 2px 6px 0 #2de3ff22;
-            letter-spacing: 0.5px;
-            vertical-align: middle;
-        }
-        .wa-chat-area {
-            flex: 1 1 0;
-            display: flex;
-            flex-direction: column;
-            background: #181d23;
-            min-width: 0;
-        }
-        #chat-header {
-            background: #232635;
-            color: #2de3ff;
-            font-size: 1.09em;
-            font-family: 'Montserrat', Arial, Helvetica, sans-serif;
-            padding: 1em 1.5em;
-            display: flex;
-            align-items: center;
-            gap: 1em;
-            border-bottom: 1.5px solid #2de3ff22;
-            min-height: 57px;
-        }
-        #chat-user {
-            display: flex;
-            align-items: center;
-            gap: 0.7em;
-            font-size: 1.08em;
-        }
-        #messages {
-            flex: 1 1 0;
-            overflow-y: auto;
-            padding: 1.3em 2.4vw 0.7em 2.4vw;
-            background: #181d23;
-            min-height: 200px;
-            font-size: 1.07em;
-        }
-        .message-row {
-            display: flex;
-            margin-bottom: 0.8em;
-        }
-        .message-row.me { justify-content: flex-end; }
-        .message-row.them { justify-content: flex-start; }
-        .message-bubble {
-            max-width: 390px;
-            padding: 0.7em 1.12em 0.6em 1.12em;
-            border-radius: 1.4em;
-            position: relative;
-            font-size: 1.08em;
-            background: linear-gradient(120deg,#2de3ff26 40%,#181d23 100%);
-            color: #e3f7ff;
-            word-break: break-word;
-            box-shadow: 0 2px 12px 0 #2de3ff10;
-        }
-        .message-row.me .message-bubble {
-            background: linear-gradient(120deg,#2de3ff 80%,#7bffe9 100%);
-            color: #181a20;
-            align-items: flex-end;
-        }
-        .message-meta {
-            margin-top: 0.4em;
-            font-size: 0.91em;
-            color: #b2bec3;
-            text-align: right;
-        }
-        .wa-message-input-bar {
-            background: #232635;
-            padding: 0.8em 1.5em;
-            display: flex;
-            align-items: flex-end;
-            gap: 1.2em;
-            border-top: 2px solid #2de3ff17;
-        }
-        #message-input {
-            flex: 1 1 0;
-            resize: none;
-            border: 1.5px solid #222b4c;
-            border-radius: 7px;
-            font-size: 1em;
-            padding: 0.7em 1em;
-            color: #e3f7ff;
-            background: #20273a;
-            outline: none;
-            min-height: 2.1em;
-            max-height: 7em;
-        }
-        #message-input:disabled {
-            background: #222b4c;
-            color: #999;
-        }
-        #send-btn {
-            background: linear-gradient(90deg,#2de3ff 60%,#7bffe9 100%);
-            color: #181a20;
-            border: none;
-            border-radius: 7px;
-            padding: 0.7em 1.5em;
-            font-size: 1.1em;
-            font-weight: 600;
-            cursor: pointer;
-            box-shadow: 0 2px 7px 0 #2de3ff17;
-            transition: background 0.13s;
-        }
-        #send-btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-        @media (max-width: 900px) {
-            .wa-chat-app { max-width: 100vw; }
-            .wa-main { flex-direction: column; }
-            .wa-chat-list { width: 100vw; max-width: 100vw; }
-            .wa-chat-area { min-width: 0; }
-        }
-        @media (max-width: 700px) {
-            #chat-header, .wa-header, .wa-message-input-bar { padding: 0.8em 0.7em; }
-            #messages { padding: 1em 0.5em 0.7em 0.5em; }
-            .wa-chat-list-search { padding: 0.67em 0.5em 0.4em 0.5em; }
-        }
+      body { background: #181a20; color: #e3f7ff; margin:0; }
+      .pm-main { max-width:700px; margin:2.5em auto 0 auto; background:#232635; border-radius:13px; padding:2em 1.2em 3em 1.2em; box-shadow:0 6px 32px 0 #2de3ff19;}
+      .pm-header { display:flex; align-items:center; justify-content:space-between; }
+      .pm-header h2 { color: #2de3ff; font-family:Orbitron,sans-serif; margin:0; }
+      .pm-logout, .pm-back { background: none; border:none; color:#2de3ff; font-size:1.2em; cursor:pointer; }
+      .pm-users-list { background: #222b4c; border-radius:8px; padding:1em; margin-bottom:2em; }
+      .pm-users-list label { color:#7bffe9; font-size:1.01em; }
+      .pm-users-list select { background:#232635; color:#e3f7ff; border-radius:7px; border:1.5px solid #2de3ff33; padding:0.45em 1em; font-size:1em; }
+      .pm-chat-window { background:#222b4c; border-radius:8px; min-height:300px; max-height:350px; overflow-y:auto; padding:1em; margin-bottom:1em; }
+      .pm-message-row { display:flex; margin-bottom:0.75em; }
+      .pm-message-row .pm-msg-bubble { max-width:63%; padding:0.7em 1em; border-radius:1em; font-size:1.09em;}
+      .pm-message-row.self { flex-direction:row-reverse; }
+      .pm-message-row.self .pm-msg-bubble { background:#2de3ff; color:#222b4c; margin-left:1.2em;}
+      .pm-message-row.other .pm-msg-bubble { background:#232635; color:#e3f7ff; margin-right:1.2em;}
+      .pm-msg-meta { font-size:0.85em; color:#7bffe9; margin-top:0.15em; }
+      .pm-new-msg-form { display:flex; gap:0.7em; }
+      .pm-new-msg-form textarea { flex:1; min-height:2.7em; border-radius:9px; border:1.5px solid #2de3ff33; background:#232635; color:#e3f7ff; font-size:1.07em; padding:0.6em 1em; }
+      .pm-new-msg-form button { background:linear-gradient(90deg,#2de3ff 60%,#7bffe9 100%); color:#181a20; border:none; border-radius:7px; padding:0.4em 1.2em; font-weight:700; font-size:1.11em; box-shadow:0 2px 7px 0 #2de3ff13; cursor:pointer; }
+      @media (max-width:600px) {
+        .pm-main{padding:1em 0.4em 2em 0.4em;}
+        .pm-chat-window{padding:0.5em;}
+      }
     </style>
 </head>
 <body>
-<div class="wa-chat-app">
-    <div class="wa-header">
-        <span><i class="fa-solid fa-comments"></i> Syndicate Private Messages</span>
-        <div>
-            <button id="pm-btn" class="icon-btn" title="Messages"><i class="fa-solid fa-envelope"></i></button>
-            <button id="logout-btn" class="icon-btn" title="Logout"><i class="fa-solid fa-sign-out-alt"></i></button>
+    <canvas class="animated-bg-canvas"></canvas>
+    <div class="pm-main">
+        <div class="pm-header">
+            <button class="pm-back" id="pm-back-btn" title="Back"><i class="fa-solid fa-arrow-left"></i> Back</button>
+            <h2><i class="fa-solid fa-envelope"></i> Private Messages</h2>
+            <button class="pm-logout" id="pm-logout-btn" title="Logout"><i class="fa-solid fa-sign-out-alt"></i></button>
         </div>
+        <div class="pm-users-list">
+            <label for="pm-user-select">Conversation with:</label>
+            <select id="pm-user-select"></select>
+        </div>
+        <div class="pm-chat-window" id="pm-chat-window">
+            <!-- Messages will appear here -->
+        </div>
+        <form id="pm-new-msg-form" class="pm-new-msg-form" autocomplete="off">
+            <textarea id="pm-new-msg-text" placeholder="Type your message..." required></textarea>
+            <button type="submit">Send</button>
+        </form>
     </div>
-    <div class="wa-main">
-        <!-- Chat List -->
-        <div class="wa-chat-list">
-            <div class="wa-chat-list-search">
-                <input type="text" id="search-user" placeholder="Search member...">
-            </div>
-            <ul id="chat-list"></ul>
-        </div>
-        <!-- Chat Area -->
-        <div class="wa-chat-area">
-            <div id="chat-header" style="visibility:hidden;">
-                <div id="chat-user"></div>
-            </div>
-            <div id="messages"></div>
-            <form id="message-form" class="wa-message-input-bar" autocomplete="off">
-                <textarea id="message-input" placeholder="Type a message..." rows="1" required disabled></textarea>
-                <button type="submit" id="send-btn" disabled><i class="fa-solid fa-paper-plane"></i> Send</button>
-            </form>
-        </div>
-    </div>
-</div>
-<script src="messages.js"></script>
+    <script src="animated-bg.js"></script>
+    <!-- Firebase SDKs: -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.1/firebase-database-compat.js"></script>
+    <script>
+      // Your Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyAcKNUaCd3Xo-GUxBA_NmzVWfVpnVC-m0A",
+        authDomain: "syndicate-ragestar.firebaseapp.com",
+        databaseURL: "https://syndicate-ragestar-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "syndicate-ragestar",
+        storageBucket: "syndicate-ragestar.firebasestorage.app",
+        messagingSenderId: "999935359149",
+        appId: "1:999935359149:web:190243de7b87b8b429ae24",
+        measurementId: "G-728FW0TF79"
+      };
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+      const db = firebase.database();
+    </script>
+    <script src="messages.js"></script>
 </body>
 </html>
