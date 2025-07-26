@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>The Syndicate - Member Panel</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Fonts and Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Orbitron:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body class="dark-bg">
+    <canvas class="animated-bg-canvas"></canvas>
+
+    <div class="main-app">
+        <!-- Login Section -->
+        <section id="member-login-section" class="panel-section">
+            <div class="login-card">
+                <h2><i class="fa-solid fa-mask"></i> Syndicate Login</h2>
+                <form id="member-login-form" autocomplete="off">
+                    <input type="text" id="member-username" placeholder="Username" maxlength="40" required>
+                    <input type="password" id="member-password" placeholder="Password" maxlength="64" required>
+                    <button type="submit" class="btn-primary">Login</button>
+                </form>
+                <p id="member-login-error" class="error-message"></p>
+                <div class="login-hint">
+                    <i class="fa-solid fa-circle-info"></i>
+                    Only registered members can log in.
+                </div>
+            </div>
+        </section>
+
+        <!-- Announcements & Member Panel -->
+        <section id="announcements-section" class="panel-section" style="display:none;">
+            <header class="member-header">
+                <span id="member-welcome-msg"></span>
+                <div class="member-header-actions">
+                    <button id="pm-btn" title="Private Messages" class="icon-btn">
+                        <i class="fa-solid fa-envelope"></i>
+                    </button>
+                    <button id="member-logout-btn" title="Logout" class="icon-btn">
+                        <i class="fa-solid fa-sign-out-alt"></i>
+                    </button>
+                </div>
+            </header>
+            <div class="main-content-flex">
+                <!-- Announcements Column -->
+                <div class="announcements-panel">
+                    <div class="filter-bar">
+                        <select id="announcement-filter-category"></select>
+                        <input type="text" id="announcement-filter-tag" placeholder="Filter by tag...">
+                    </div>
+                    <ul id="announcements-list"></ul>
+                    <div id="no-announcements" style="display:none;color:#b2bec3;padding:1.5em;text-align:center;">
+                        No announcements found.
+                    </div>
+                </div>
+
+                <!-- Member List Column -->
+                <aside class="members-panel">
+                    <h3><i class="fa-solid fa-users"></i> Members</h3>
+                    <ul id="member-list"></ul>
+                </aside>
+            </div>
+        </section>
+    </div>
+
+    <!-- (Optional legacy modal, not used if using WhatsApp style page) -->
+    <div id="pm-panel" class="modal" style="display:none;">
+        <div class="modal-content">
+            <button id="close-pm-modal" class="modal-close">&times;</button>
+            <form id="pm-form">
+                <label for="pm-to">To:</label>
+                <select id="pm-to"></select>
+                <textarea id="pm-text" placeholder="Your message..." required></textarea>
+                <button type="submit">Send</button>
+            </form>
+            <div id="pm-messages"></div>
+        </div>
+    </div>
+
+    <script src="animated-bg.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Syndicate Admin Panel</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Fonts and Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Orbitron:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        .admin-section {
+            max-width: 1000px;
+            margin: 3vh auto 0 auto;
+            background: #222b4c;
+            border-radius: 16px;
+            box-shadow: 0 6px 32px 0 #2de3ff19;
+            padding: 2.2em 2.3em 2.3em 2.3em;
+            display: none;
+        }
+        .admin-section h2 {
+            font-family: 'Orbitron', 'Montserrat', Arial, Helvetica, sans-serif;
+            color: #2de3ff;
+            margin: 0 0 1.5em 0;
+            letter-spacing: 0.03em;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 2.4em;
+            background: #232635;
+            border-radius: 8px;
+        }
+        th, td {
+            padding: 0.72em 1em;
+            border-bottom: 1.5px solid #2de3ff15;
+            text-align: left;
+            font-size: 1.06em;
+        }
+        th {
+            background: #232635;
+            color: #2de3ff;
+            font-weight: 700;
+            font-size: 1.11em;
+        }
+        tr:last-child td {
+            border-bottom: none;
+        }
+        .admin-form-row {
+            display: flex;
+            gap: 1.3em;
+            margin-bottom: 1.2em;
+            flex-wrap: wrap;
+        }
+        .admin-form-row input,
+        .admin-form-row select,
+        .admin-form-row textarea {
+            background: #222b4c;
+            color: #e3f7ff;
+            border: 1.5px solid #232635;
+            border-radius: 7px;
+            font-size: 1em;
+            padding: 0.5em 1em;
+            outline: none;
+            min-width: 120px;
+        }
+        .admin-form-row textarea {
+            min-width: 220px;
+            min-height: 2.5em;
+        }
+        .btn-primary, .btn-edit-member, .btn-delete-member, .btn-delete-announcement {
+            background: linear-gradient(90deg,#2de3ff 60%,#7bffe9 100%);
+            color: #181a20;
+            border: none;
+            border-radius: 7px;
+            padding: 0.4em 1.1em;
+            font-size: 1.06em;
+            font-weight: 600;
+            cursor: pointer;
+            margin-right: 0.6em;
+            margin-bottom: 0.2em;
+            box-shadow: 0 2px 7px 0 #2de3ff13;
+            transition: background 0.13s;
+        }
+        .btn-edit-member { background: #2de3ff; color: #232635;}
+        .btn-delete-member, .btn-delete-announcement { background: #ff4b5c; color: #fff;}
+        .btn-edit-member:hover, .btn-delete-member:hover, .btn-delete-announcement:hover { opacity: 0.8; }
+        .modal {
+            position: fixed; top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background: rgba(20,30,40,0.86);
+            display: none; align-items: center; justify-content: center;
+            z-index: 20;
+        }
+        .modal-content {
+            background: #232635;
+            padding: 2em 2.4em;
+            border-radius: 13px;
+            box-shadow: 0 4px 22px 0 #2de3ff22;
+            min-width: 320px;
+            max-width: 95vw;
+            position: relative;
+        }
+        .modal-close {
+            position: absolute;
+            right: 1em; top: 1em;
+            background: none;
+            border: none;
+            color: #2de3ff;
+            font-size: 1.7em;
+            cursor: pointer;
+        }
+        @media (max-width: 700px) {
+            .admin-section { padding: 1.1em 0.7em 2em 0.7em; }
+            table { font-size: 0.98em; }
+            .admin-form-row { flex-direction: column; gap: 0.7em; }
+            .modal-content { padding: 1em 0.6em; }
+        }
+    </style>
+</head>
+<body class="dark-bg">
+    <canvas class="animated-bg-canvas"></canvas>
+    <!-- Admin Login Modal -->
+    <div id="admin-login-modal" class="modal" style="display:flex;">
+      <div class="modal-content">
+        <h3 style="color:#2de3ff;margin-top:0;">Admin Login</h3>
+        <form id="admin-login-form">
+          <input type="text" id="admin-login-username" placeholder="Admin Username" autocomplete="username" required>
+          <input type="password" id="admin-login-password" placeholder="Admin Password" autocomplete="current-password" required>
+          <button type="submit" class="btn-primary">Login</button>
+        </form>
+        <div id="admin-login-error" style="color:#ff4b5c;min-height:1.5em;margin-top:0.7em;"></div>
+      </div>
+    </div>
+    <div class="admin-section" style="display:none;">
+        <h2><i class="fa-solid fa-user-gear"></i> Syndicate Admin Panel 
+            <button id="admin-logout-btn" class="btn-delete-member" style="float:right;margin-left:1em;">Logout</button>
+        </h2>
+        <!-- Member Management -->
+        <h3>Members</h3>
+        <form id="add-member-form">
+            <div class="admin-form-row">
+                <input type="text" id="add-member-username" placeholder="Username" maxlength="40" required>
+                <input type="password" id="add-member-password" placeholder="Password" maxlength="64" required>
+                <select id="add-member-role" required>
+                    <option value="">Select Role</option>
+                    <option>Founder</option>
+                    <option>Chairman / Chairperson</option>
+                    <option>President</option>
+                    <option>Chief Executive Officer (CEO)</option>
+                    <option>Vice President (VP)</option>
+                    <option>Director General</option>
+                    <option>Chief of Staff</option>
+                    <option>Chief Intelligence Officer (CIO)</option>
+                    <option>Managing Director</option>
+                    <option>Deputy Director</option>
+                    <option>Chief Financial Officer (CFO)</option>
+                    <option>Internal Affairs Head</option>
+                    <option>Chief Operations Officer (COO)</option>
+                    <option>Chief Strategy Officer (CSO)</option>
+                    <option>Smuggling Coordinator / Underground Networks Head</option>
+                </select>
+                <button type="submit" class="btn-primary">Add Member</button>
+            </div>
+        </form>
+        <table>
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Role</th>
+                    <th>Last Login</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="admin-member-list"></tbody>
+        </table>
+
+        <!-- Announcements Management -->
+        <h3>Announcements</h3>
+        <form id="add-announcement-form">
+            <div class="admin-form-row">
+                <input type="text" id="add-ann-title" placeholder="Title" maxlength="80" required>
+                <input type="text" id="add-ann-category" placeholder="Category" maxlength="40">
+                <input type="text" id="add-ann-tags" placeholder="Tags (comma separated)">
+                <input type="text" id="add-ann-attachment" placeholder="Attachment (image URL)">
+            </div>
+            <div class="admin-form-row">
+                <textarea id="add-ann-message" placeholder="Announcement message" maxlength="900" required></textarea>
+                <button type="submit" class="btn-primary" style="align-self:flex-start;">Add Announcement</button>
+            </div>
+        </form>
+        <table>
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Category</th>
+                    <th>Tags</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="admin-announcement-list"></tbody>
+        </table>
+    </div>
+    <!-- Edit Member Modal -->
+    <div class="modal" id="edit-member-modal">
+        <div class="modal-content">
+            <button type="button" class="modal-close">&times;</button>
+            <form id="edit-member-form">
+                <input type="hidden" id="edit-member-idx">
+                <div class="admin-form-row">
+                    <input type="text" id="edit-member-username" placeholder="Username" maxlength="40" required>
+                    <select id="edit-member-role" required>
+                        <option value="">Select Role</option>
+                        <option>Founder</option>
+                        <option>Chairman / Chairperson</option>
+                        <option>President</option>
+                        <option>Chief Executive Officer (CEO)</option>
+                        <option>Vice President (VP)</option>
+                        <option>Director General</option>
+                        <option>Chief of Staff</option>
+                        <option>Chief Intelligence Officer (CIO)</option>
+                        <option>Managing Director</option>
+                        <option>Deputy Director</option>
+                        <option>Chief Financial Officer (CFO)</option>
+                        <option>Internal Affairs Head</option>
+                        <option>Chief Operations Officer (COO)</option>
+                        <option>Chief Strategy Officer (CSO)</option>
+                        <option>Smuggling Coordinator / Underground Networks Head</option>
+                    </select>
+                    <input type="password" id="edit-member-password" placeholder="New Password (leave blank to keep)">
+                </div>
+                <div class="admin-form-row">
+                    <button type="submit" class="btn-primary">Save</button>
+                    <button type="button" id="edit-member-cancel" class="btn-delete-member">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script src="sha256.js"></script>
+    <script src="animated-bg.js"></script>
+    <script src="admin.js"></script>
+</body>
+</html>
