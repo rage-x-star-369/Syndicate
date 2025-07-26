@@ -1,5 +1,10 @@
 // Firebase-based Member panel logic for The Syndicate
-
+function showLoader() {
+  document.getElementById('loader-overlay').style.display = 'flex';
+}
+function hideLoader() {
+  document.getElementById('loader-overlay').style.display = 'none';
+}
 function escapeHtml(text) {
     if (!text) return "";
     return text.replace(/[&<>"']/g, function(match) {
