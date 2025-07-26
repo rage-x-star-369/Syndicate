@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Syndicate Tasks</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Fonts and Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Orbitron:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    .tasks-container {
+      max-width: 760px;
+      margin: 5vh auto 0 auto;
+      background: #232635;
+      border-radius: 18px;
+      box-shadow: 0 8px 38px 0 #2de3ff17;
+      padding: 2.8em 2.1em 2.3em 2.1em;
+      min-height: 70vh;
+    }
+    .tasks-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 2em;
+    }
+    .tasks-header .left {
+      font-family: 'Orbitron', 'Montserrat', Arial, Helvetica, sans-serif;
+      color: #2de3ff;
+      font-size: 1.5em;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+    }
+    .tasks-header .right {
+      display: flex;
+      gap: 1em;
+    }
+    .add-task-form {
+      display: none;
+      margin-bottom: 2.4em;
+      background: #222b4c;
+      padding: 1.2em 1.4em;
+      border-radius: 13px;
+      box-shadow: 0 4px 14px #2de3ff11;
+    }
+    .add-task-form input, .add-task-form textarea {
+      width: 100%;
+      margin-bottom: 1em;
+      padding: 0.7em 1em;
+      background: #232635;
+      color: #e3f7ff;
+      border: 1.5px solid #2de3ff33;
+      border-radius: 7px;
+      font-size: 1em;
+      outline: none;
+    }
+    .add-task-form button {
+      margin-top: 0.4em;
+      width: 100%;
+    }
+    .tasks-section {
+      margin-bottom: 2.1em;
+    }
+    .tasks-section h3 {
+      color: #7bffe9;
+      font-size: 1.17em;
+      letter-spacing: 0.04em;
+      margin-bottom: 1.1em;
+    }
+    .task-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .task-card {
+      background: #1a1e2c;
+      border-radius: 11px;
+      box-shadow: 0 2px 8px #2de3ff10;
+      padding: 1.1em 1.4em;
+      margin-bottom: 1.1em;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .task-info {
+      flex: 1 1 0;
+    }
+    .task-title {
+      color: #2de3ff;
+      font-weight: bold;
+      font-size: 1.11em;
+      margin-bottom: 0.2em;
+      display: flex; align-items: center; gap: 0.7em;
+    }
+    .task-desc {
+      color: #e3f7ff;
+      font-size: 1em;
+      margin-bottom: 0.1em;
+    }
+    .task-meta {
+      font-size: 0.92em;
+      color: #b2bec3;
+      margin-top: 0.2em;
+    }
+    .task-actions {
+      margin-left: 1.5em;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5em;
+      align-items: flex-end;
+    }
+    .task-actions .btn-small {
+      padding: 0.28em 1em;
+      font-size: 0.98em;
+      min-width: 95px;
+    }
+    .task-completed {
+      text-decoration: line-through;
+      color: #7bffe988;
+    }
+    @media (max-width: 700px) {
+      .tasks-container { padding: 1em 0.4em 1.5em 0.4em; }
+      .task-card { flex-direction: column; align-items: flex-start; gap: 0.8em; }
+      .task-actions { flex-direction: row; gap: 0.5em; margin-left: 0; }
+    }
+  </style>
+</head>
+<body class="dark-bg">
+  <canvas class="animated-bg-canvas"></canvas>
+  <div class="tasks-container">
+    <div class="tasks-header">
+      <div class="left"><i class="fa-solid fa-list-check"></i> Tasks</div>
+      <div class="right">
+        <button id="back-btn" class="btn-primary"><i class="fa-solid fa-arrow-left"></i> Back</button>
+        <button id="add-task-btn" class="btn-primary" style="display:none;"><i class="fa-solid fa-plus"></i> Add Task</button>
+      </div>
+    </div>
+    <form id="add-task-form" class="add-task-form">
+      <input type="text" id="task-title" placeholder="Task Title" required maxlength="60">
+      <textarea id="task-desc" placeholder="Task Description" rows="2" maxlength="250"></textarea>
+      <button type="submit" class="btn-primary"><i class="fa-solid fa-paper-plane"></i> Add Task</button>
+    </form>
+    <div class="tasks-section" id="not-completed-section">
+      <h3><i class="fa-regular fa-square"></i> Not Completed</h3>
+      <ul class="task-list" id="not-completed-list"></ul>
+      <div id="no-tasks-not-completed" style="color:#b2bec3;padding:1.2em 0;">No tasks!</div>
+    </div>
+    <div class="tasks-section" id="completed-section">
+      <h3><i class="fa-regular fa-square-check"></i> Completed</h3>
+      <ul class="task-list" id="completed-list"></ul>
+      <div id="no-tasks-completed" style="color:#b2bec3;padding:1.2em 0;">No completed tasks!</div>
+    </div>
+  </div>
+  <script src="animated-bg.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.1/firebase-database-compat.js"></script>
+  <script>
+    // Your Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyAcKNUaCd3Xo-GUxBA_NmzVWfVpnVC-m0A",
+      authDomain: "syndicate-ragestar.firebaseapp.com",
+      databaseURL: "https://syndicate-ragestar-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "syndicate-ragestar",
+      storageBucket: "syndicate-ragestar.firebasestorage.app",
+      messagingSenderId: "999935359149",
+      appId: "1:999935359149:web:190243de7b87b8b429ae24",
+      measurementId: "G-728FW0TF79"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    function getMemberSession() {
+      return sessionStorage.getItem("member_username");
+    }
+    async function getMemberByUsername(username) {
+      const snapshot = await db.ref('members/' + username).once('value');
+      return snapshot.val();
+    }
+
+    // TASKS LOGIC
+    function escapeHtml(text) {
+      if (!text) return "";
+      return text.replace(/[&<>"']/g, function(match) {
+        return ({
+          '&': '&amp;', '<': '&lt;', '>': '&gt;',
+          '"': '&quot;', "'": '&#39;'
+        })[match];
+      });
+    }
+
+    // Generate a unique task ID
+    function generateId() {
+      return '_' + Math.random().toString(36).substr(2, 9);
+    }
+
+    // Render all tasks
+    function renderTasks(tasks, username, isAdmin) {
+      const notCompletedList = document.getElementById('not-completed-list');
+      const completedList = document.getElementById('completed-list');
+      const noTasksNotCompleted = document.getElementById('no-tasks-not-completed');
+      const noTasksCompleted = document.getElementById('no-tasks-completed');
+
+      notCompletedList.innerHTML = '';
+      completedList.innerHTML = '';
+
+      let notCompletedCount = 0, completedCount = 0;
+
+      // Sort tasks by createdAt desc
+      tasks.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+
+      tasks.forEach(task => {
+        let li = document.createElement('li');
+        li.className = 'task-card' + (task.completed ? ' task-completed' : '');
+        li.innerHTML = `
+          <div class="task-info">
+            <div class="task-title">
+              ${task.completed ? '<i class="fa-solid fa-check"></i>' : '<i class="fa-regular fa-square"></i>'}
+              ${escapeHtml(task.title)}
+            </div>
+            <div class="task-desc">${escapeHtml(task.desc)}</div>
+            <div class="task-meta">
+              Added by: ${escapeHtml(task.creator || "Unknown")}
+              <span style="margin-left:1.5em"><i class="fa-regular fa-clock"></i> ${task.createdAt ? new Date(task.createdAt).toLocaleString() : ""}</span>
+            </div>
+          </div>
+          <div class="task-actions">
+            ${!task.completed ? `<button class="btn-primary btn-small mark-complete-btn"><i class="fa-solid fa-circle-check"></i> Mark Completed</button>` : ""}
+            ${isAdmin ? `<button class="btn-primary btn-small delete-task-btn"><i class="fa-solid fa-trash"></i> Delete</button>` : ""}
+          </div>
+        `;
+        // Mark complete
+        if (!task.completed) {
+          li.querySelector('.mark-complete-btn').onclick = () => {
+            db.ref('tasks/' + task.id + '/completed').set(true);
+            db.ref('tasks/' + task.id + '/completedBy').set(username);
+            db.ref('tasks/' + task.id + '/completedAt').set(Date.now());
+          };
+          notCompletedList.appendChild(li);
+          notCompletedCount++;
+        } else {
+          completedList.appendChild(li);
+          completedCount++;
+        }
+        // Delete (admin only)
+        if (isAdmin) {
+          li.querySelector('.delete-task-btn').onclick = () => {
+            if (confirm("Delete this task?")) {
+              db.ref('tasks/' + task.id).remove();
+            }
+          };
+        }
+      });
+
+      noTasksNotCompleted.style.display = notCompletedCount ? "none" : "block";
+      noTasksCompleted.style.display = completedCount ? "none" : "block";
+    }
+
+    // Show or hide the add task form
+    function showAddTaskForm(show) {
+      document.getElementById('add-task-form').style.display = show ? "block" : "none";
+    }
+
+    // Main
+    document.addEventListener("DOMContentLoaded", async function() {
+      const username = getMemberSession();
+      if (!username) { window.location.href = "index.html"; return; }
+      const member = await getMemberByUsername(username);
+      if (!member) { window.location.href = "index.html"; return; }
+      const isAdmin = member.role && member.role.toLowerCase().includes("admin");
+
+      // Show add task button for admin only
+      if (isAdmin) {
+        document.getElementById('add-task-btn').style.display = "inline-block";
+      }
+
+      // Add task button
+      document.getElementById('add-task-btn').onclick = function() {
+        showAddTaskForm(true);
+      };
+
+      // Back button
+      document.getElementById('back-btn').onclick = function() {
+        window.location.href = "index.html";
+      };
+
+      // Add task form submit
+      document.getElementById('add-task-form').onsubmit = async function(e) {
+        e.preventDefault();
+        const title = document.getElementById('task-title').value.trim();
+        const desc = document.getElementById('task-desc').value.trim();
+        if (!title) return;
+        const id = generateId();
+        await db.ref('tasks/' + id).set({
+          id,
+          title,
+          desc,
+          creator: username,
+          createdAt: Date.now(),
+          completed: false
+        });
+        // Reset and hide form
+        document.getElementById('add-task-form').reset();
+        showAddTaskForm(false);
+      };
+
+      // Hide add form when clicking outside or after add
+      document.addEventListener('click', function(e) {
+        if (e.target.id !== 'add-task-btn' && e.target.id !== 'add-task-form' && !document.getElementById('add-task-form').contains(e.target)) {
+          showAddTaskForm(false);
+        }
+      });
+
+      // Real-time listen for tasks
+      db.ref('tasks').on('value', function(snapshot) {
+        const val = snapshot.val();
+        let tasks = [];
+        if (val) {
+          tasks = Object.values(val);
+        }
+        renderTasks(tasks, username, isAdmin);
+      });
+    });
+  </script>
+</body>
+</html>
