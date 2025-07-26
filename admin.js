@@ -50,53 +50,9 @@ const SYNDICATE_ROLES = [
     "Smuggling Coordinator / Underground Networks Head"
 ];
 
-// --- Admin Login System ---
-const ADMIN_CREDENTIALS = {
-    username: "admin",
-    // SHA-256 of '123'
-    passwordHash: "a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3"
-};
+// --- Admin Login System REMOVED ---
 
-function showAdminLogin() {
-    document.getElementById("admin-login-modal").style.display = "flex";
-    document.querySelector(".admin-section").style.display = "none";
-}
-function hideAdminLogin() {
-    document.getElementById("admin-login-modal").style.display = "none";
-    document.querySelector(".admin-section").style.display = "";
-}
-function isAdminAuthenticated() {
-    return sessionStorage.getItem("admin_authenticated") === "yes";
-}
-function setAdminAuthenticated(val) {
-    sessionStorage.setItem("admin_authenticated", val ? "yes" : "");
-}
 document.addEventListener("DOMContentLoaded", function() {
-    document.getElementById("admin-login-form").onsubmit = async function(e){
-        e.preventDefault();
-        const uname = document.getElementById("admin-login-username").value.trim();
-        const pw = document.getElementById("admin-login-password").value;
-        const err = document.getElementById("admin-login-error");
-        const hash = await hashPassword(pw);
-        if (uname === ADMIN_CREDENTIALS.username && hash === ADMIN_CREDENTIALS.passwordHash) {
-            setAdminAuthenticated(true);
-            hideAdminLogin();
-            renderAdminMemberList();
-            renderAdminAnnouncementList();
-        } else {
-            err.textContent = "Incorrect admin username or password.";
-        }
-    };
-    document.getElementById("admin-logout-btn").onclick = function(){
-        setAdminAuthenticated(false);
-        showAdminLogin();
-    };
-    if (!isAdminAuthenticated()) {
-        showAdminLogin();
-    } else {
-        hideAdminLogin();
-    }
-
     // Member management
     renderAdminMemberList();
     document.getElementById("add-member-form").onsubmit = addMember;
@@ -108,6 +64,11 @@ document.addEventListener("DOMContentLoaded", function() {
     document.getElementById("add-announcement-form").onsubmit = addAnnouncement;
 
     setupModalClose();
+
+    // Logout button just redirects to index page now
+    document.getElementById("admin-logout-btn").onclick = function(){
+        window.location.href = "index.html";
+    };
 });
 
 // ---- Member Management ----
