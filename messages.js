@@ -105,7 +105,8 @@ async function openChat(type, id) {
   messagesElem.innerHTML = `<div style="color:#7bffe9;padding:1em;text-align:center;">Loading...</div>`;
   // Listen for messages
   const chatKey = getChatKey(myUsername, type, id);
-  chatListeners[type+"_"+id] = db.ref('messages/' + chatKey).on('value', snap => {
+  const ref = db.ref('messages/' + chatKey);
+  const listener = snap => {
     const val = snap.val();
     let msgs = [];
     if(val) {
@@ -117,7 +118,9 @@ async function openChat(type, id) {
     messagesElem.scrollTop = messagesElem.scrollHeight;
     // Mark as read
     db.ref('chats/'+myUsername+'/'+type+'_'+id+'/unreadCount').set(0);
-  });
+  };
+  ref.on('value', listener);
+  chatListeners[type+"_"+id] = () => ref.off('value', listener);
 }
 
 function renderMessageBubble(m) {
