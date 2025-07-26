@@ -235,7 +235,7 @@ async function votePoll(annId, idx, username) {
 
 // --- DOMContentLoaded: Login, Logout, PM button, Init ---
 document.addEventListener("DOMContentLoaded", function() {
-  showLoader();
+  
     const username = getMemberSession();
     if (username) {
         getMemberList().then(members => {
@@ -274,7 +274,7 @@ document.addEventListener("DOMContentLoaded", function() {
             member.lastLogin = new Date().toLocaleString();
             await setMember(member);
             showAnnouncements(username);
-          hideLoader();
+          
         });
     }
     const logoutBtn = document.getElementById('member-logout-btn');
