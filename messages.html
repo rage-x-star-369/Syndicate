@@ -18,44 +18,30 @@
       <button class="icon-btn" id="logout-btn" title="Logout"><i class="fa-solid fa-sign-out-alt"></i></button>
     </div>
     <div class="wa-main">
-      <!-- Chat List Sidebar -->
+      <!-- LEFT: Chat list -->
       <aside class="wa-chat-list">
         <div class="wa-chat-list-search">
-          <input type="text" id="search-user" placeholder="Search chats or groups...">
-          <button id="new-group-btn" class="icon-btn" title="Create Group"><i class="fa-solid fa-users"></i></button>
+          <input type="text" id="search-user" placeholder="Search users...">
         </div>
         <ul id="chat-list"></ul>
       </aside>
-      <!-- Chat Area -->
+      <!-- RIGHT: Chat area -->
       <section class="wa-chat-area">
         <div id="chat-header">
           <span id="chat-user"></span>
         </div>
         <div id="messages"></div>
-        <form class="wa-message-input-bar" id="message-form" autocomplete="off" enctype="multipart/form-data">
-          <input type="file" id="chat-attachment" style="display:none;" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.zip,.rar,.mp4,.mp3,.avi"/>
-          <button type="button" id="attach-btn" class="icon-btn" title="Attach file"><i class="fa-solid fa-paperclip"></i></button>
+        <form class="wa-message-input-bar" id="message-form" autocomplete="off">
           <textarea id="message-input" placeholder="Type a message..." required></textarea>
           <button id="send-btn" type="submit"><i class="fa-solid fa-paper-plane"></i></button>
         </form>
       </section>
     </div>
   </div>
-  <!-- Group Creation Modal -->
-  <div id="group-modal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(25,32,48,0.95); z-index:9999; align-items:center; justify-content:center;">
-    <form id="group-form" style="background:#232635; padding:2em 2.5em; border-radius:16px; min-width:300px; max-width:95vw;">
-      <h3 style="color:#2de3ff; text-align:center;"><i class="fa-solid fa-users"></i> New Group</h3>
-      <input type="text" id="group-name" placeholder="Group Name" required maxlength="35" style="width:100%;margin-bottom:1em;"/>
-      <div id="group-members-list" style="max-height:180px;overflow-y:auto;margin-bottom:1em;"></div>
-      <button type="submit" class="btn-primary" style="width:100%;">Create Group</button>
-      <button type="button" id="close-group-modal" class="btn-primary" style="width:100%;margin-top:0.7em;background:#222b4c;">Cancel</button>
-    </form>
-  </div>
   <script src="https://www.gstatic.com/firebasejs/10.12.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.1/firebase-database-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.1/firebase-storage-compat.js"></script>
   <script>
-    // Your Firebase configuration
+    // Firebase config (already correct!)
     const firebaseConfig = {
       apiKey: "AIzaSyAcKNUaCd3Xo-GUxBA_NmzVWfVpnVC-m0A",
       authDomain: "syndicate-ragestar.firebaseapp.com",
@@ -68,7 +54,6 @@
     };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
-    const storage = firebase.storage();
   </script>
   <script src="messages.js"></script>
 </body>
