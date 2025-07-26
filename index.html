@@ -9,6 +9,60 @@
     <link rel="stylesheet" href="styles.css">
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        #admin-login-fab {
+            position: fixed;
+            right: 2em;
+            bottom: 2em;
+            width: 3.4em;
+            height: 3.4em;
+            border-radius: 50%;
+            background: linear-gradient(90deg,#2de3ff 60%,#7bffe9 100%);
+            color: #222b4c;
+            border: none;
+            box-shadow: 0 4px 22px 0 #2de3ff22;
+            font-size: 1.5em;
+            cursor: pointer;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.13s;
+        }
+        #admin-login-fab:hover {
+            background: #2de3ff;
+            color: #fff;
+        }
+        #admin-modal {
+            display: none;
+            position: fixed;
+            z-index: 999;
+            left: 0; top: 0;
+            width: 100vw; height: 100vh;
+            background: rgba(20,30,40,0.86);
+            align-items: center;
+            justify-content: center;
+        }
+        #admin-modal .modal-content {
+            background: #232635;
+            padding: 2em 2.4em;
+            border-radius: 13px;
+            box-shadow: 0 4px 22px 0 #2de3ff22;
+            min-width: 320px;
+            max-width: 95vw;
+            position: relative;
+        }
+        #admin-modal .close-btn {
+            position: absolute;
+            right: 1em;
+            top: 1em;
+            background: none;
+            border: none;
+            color: #2de3ff;
+            font-size: 1.7em;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body class="dark-bg">
     <canvas class="animated-bg-canvas"></canvas>
@@ -115,6 +169,7 @@
       firebase.initializeApp(firebaseConfig);
       const db = firebase.database();
     </script>
+    <script src="sha256.js"></script>
     <script src="script.js"></script>
     <script>
       // Admin login modal logic
