@@ -243,7 +243,7 @@ function setupModalClose() {
 // --- DOMContentLoaded: Event Wiring ---
 document.addEventListener("DOMContentLoaded", function() {
     // Member management
-  showLoader();
+  
     renderAdminMemberList();
     document.getElementById("add-member-form").onsubmit = addMember;
     document.getElementById("edit-member-form").onsubmit = saveEditedMember;
@@ -263,5 +263,5 @@ document.addEventListener("DOMContentLoaded", function() {
     // Real-time listeners (for live update)
     db.ref('members').on('value', () => renderAdminMemberList());
     db.ref('announcements').on('value', () => renderAdminAnnouncementList());
-  hideLoader();
+  
 });
