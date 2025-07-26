@@ -243,6 +243,13 @@ document.addEventListener("DOMContentLoaded", function() {
     } else {
         showLogin();
     }
+    const tasksBtn = document.getElementById("tasks-btn");
+    if (tasksBtn) {
+        tasksBtn.addEventListener("click", function(e) {
+            e.preventDefault();
+            window.location.href = "tasks.html";
+        });
+    }
     const loginForm = document.getElementById('member-login-form');
     if (loginForm) {
         loginForm.addEventListener('submit', async function(e) {
